@@ -1,7 +1,7 @@
 import {FormEvent, useEffect, useState} from 'react';
-import {postRegister} from "@/api/users";
+import {postLogin} from "@/api/users";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {registerSchema} from "@/form/formSchema";
+import {loginSchema, registerSchema} from "@/form/formSchema";
 import {useForm} from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
@@ -9,20 +9,19 @@ import {Input} from "@/components/ui/input";
 import LoadingButton from "@/form/LoadingButton";
 
 
-export default function Register() {
+export default function Authenticate() {
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const form = useForm<z.infer<typeof registerSchema>>({
-        resolver: zodResolver(registerSchema),
+    const form = useForm<z.infer<typeof loginSchema>>({
+        resolver: zodResolver(loginSchema),
         defaultValues: {
             username: "",
-            email: "",
             password: ""
         },
     })
 
-    function onSubmit(values: z.infer<typeof registerSchema>) {
+    function onSubmit(values: z.infer<typeof loginSchema>) {
         setIsSubmitting(true)
-        postRegister(values).then(
+        postLogin(values).then(
             value => {
                 console.log(value)
                 setIsSubmitting(false)
@@ -44,19 +43,6 @@ export default function Register() {
                                     <FormLabel>Username*</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Usarname" {...field} />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Email*</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="email" {...field} />
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
