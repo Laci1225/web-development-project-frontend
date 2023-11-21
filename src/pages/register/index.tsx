@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {ChangeEvent, useState} from 'react';
 import {registerUser} from "@/api/users";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {registerSchema} from "@/form/formSchema";
@@ -11,6 +11,8 @@ import LoadingButton from "@/form/LoadingButton";
 
 export default function Register() {
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [showError, setShowError] = useState(false);
+
     const form = useForm<z.infer<typeof registerSchema>>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
@@ -27,8 +29,26 @@ export default function Register() {
                 console.log(value)
                 setIsSubmitting(false)
             })
+            .catch(error => {
+                if (error.response && error.response.status === 400) {
+                    form.setError('username', {
+                        type: 'manual',
+                        message: 'Username already taken'
+                    });
+                    setShowError(true);
+                    setIsSubmitting(false)
+                }
+            });
     }
 
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const {name} = event.target;
+        if (showError) {
+            if (name === 'username' || name === 'password' || name === 'email') {
+                setShowError(false);
+            }
+        }
+    };
 
     return (
         <div className="
@@ -61,7 +81,11 @@ shadow-muted-foreground
                                     <FormItem>
                                         <FormLabel>Email*</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="email" {...field} />
+                                            <Input placeholder="email" {...field} onChange={(e) => {
+                                                form.setValue('email', e.target.value);
+                                                handleInputChange(e);
+                                            }}
+                                            />
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
@@ -74,7 +98,11 @@ shadow-muted-foreground
                                     <FormItem>
                                         <FormLabel>Password*</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="password" {...field} />
+                                            <Input placeholder="password" {...field} type={"password"}
+                                                   onChange={(e) => {
+                                                       form.setValue('password', e.target.value);
+                                                       handleInputChange(e);
+                                                   }}/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>

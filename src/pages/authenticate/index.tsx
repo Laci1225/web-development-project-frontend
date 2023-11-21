@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {ChangeEvent, useState} from 'react';
 import {loginUser} from "@/api/users";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {loginSchema} from "@/form/formSchema";
@@ -12,6 +12,7 @@ import Cookies from "universal-cookie";
 
 export default function Authenticate() {
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [showError, setShowError] = useState(false);
     const form = useForm<z.infer<typeof loginSchema>>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -30,8 +31,27 @@ export default function Authenticate() {
                 setIsSubmitting(false)
                 console.log(token)
             })
+            .catch(error => {
+                if (error.response && error.response.status === 403) {
+                    form.setError('username', {
+                        type: 'manual',
+                        message: 'Username or password is incorrect'
+                    });
+                    setShowError(true);
+                    setIsSubmitting(false)
+
+                }
+            });
     }
 
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const {name} = event.target;
+        if (showError) {
+            if (name === 'username' || name === 'password') {
+                setShowError(false);
+            }
+        }
+    };
 
     return (
         <div className="
@@ -52,7 +72,11 @@ shadow-muted-foreground
                                     <FormItem>
                                         <FormLabel>Username*</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Usarname" {...field} />
+                                            <Input placeholder="Usarname" {...field}
+                                                   onChange={(e) => {
+                                                       form.setValue('username', e.target.value);
+                                                       handleInputChange(e);
+                                                   }}/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
@@ -65,7 +89,11 @@ shadow-muted-foreground
                                     <FormItem>
                                         <FormLabel>Password*</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="password" {...field} />
+                                            <Input placeholder="Password" {...field} type={"password"}
+                                                   onChange={(e) => {
+                                                       form.setValue('password', e.target.value);
+                                                       handleInputChange(e);
+                                                   }}/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
