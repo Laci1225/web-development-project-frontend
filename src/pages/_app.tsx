@@ -7,6 +7,8 @@ import {
     NavigationMenuList,
 } from "@/components/ui/navigation-menu"
 import Link from "next/link";
+import 'material-icons/iconfont/material-icons.css';
+
 
 export default function App({Component, pageProps}: AppProps) {
     return (
@@ -17,9 +19,9 @@ export default function App({Component, pageProps}: AppProps) {
                 </div>
                 <NavigationMenuList>
                     <NavigationMenuItem className={"px-5"}>
-                        <Link href="/add_user" legacyBehavior passHref>
+                        <Link href="/me" legacyBehavior passHref>
                             <NavigationMenuLink>
-                                Add
+                                My data
                             </NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>

@@ -7,6 +7,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {Input} from "@/components/ui/input";
 import LoadingButton from "@/form/LoadingButton";
+import Cookies from "universal-cookie";
 
 
 export default function Authenticate() {
@@ -22,9 +23,12 @@ export default function Authenticate() {
     function onSubmit(values: z.infer<typeof loginSchema>) {
         setIsSubmitting(true)
         loginUser(values).then(
-            value => {
-                console.log(value)
+            response => {
+                const token = response.token
+                const cookie = new Cookies();
+                cookie.set('jwtToken', token, {});
                 setIsSubmitting(false)
+                console.log(token)
             })
     }
 
