@@ -1,3 +1,5 @@
+import {Order} from "@/model/orderData";
+
 export interface UserData {
     id: number
     username: string,
@@ -5,12 +7,6 @@ export interface UserData {
     orders: Order[]
 }
 
-export interface Order {
-    id: number
-    name: string,
-    amount: string,
-    weight: string,
-}
 
 export interface UserDataRegistration {
     username: string,

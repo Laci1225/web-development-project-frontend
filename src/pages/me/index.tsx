@@ -1,6 +1,6 @@
 import {getMyData} from "@/api/users";
 import {useState, useEffect} from "react";
-import {Order, UserData} from "@/model/userData";
+import {UserData} from "@/model/userData";
 import {useRouter} from "next/router";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {
@@ -12,10 +12,12 @@ import {
 import {Button} from "@/components/ui/button";
 import {Toaster} from "@/components/ui/toaster";
 import {getOrders} from "@/api/orders";
+import ManageOrder from "@/form/ManageOrder";
+import {Order} from "@/model/orderData";
 
 export default function Users() {
     const [data, setData] = useState<UserData>();
-    const [orders, setOrders] = useState<Order[]>();
+    const [orders, setOrders] = useState<Order[]>([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -38,6 +40,8 @@ export default function Users() {
     return (
         <div className={"container w-4/6 py-28"}>
             <div className={"flex justify-between px-6 pb-6"}>{data?.username}
+                <ManageOrder triggerName={"Add"} triggerVariant={"default"}
+                             onOrderCreated={(order) => setOrders(prevState => [...(prevState ?? []), order])}/>
             </div>
             <Table className={"border border-gray-700 rounded"}>
                 <TableHeader>
@@ -69,8 +73,11 @@ export default function Users() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent className={"min-w-8"}>
                                                 <DropdownMenuSeparator/>
-                                                <DropdownMenuItem className={"justify-center"}>
-                                                    Edit
+                                                <DropdownMenuItem className={"justify-center"}
+                                                                  onClick={(event) => event.preventDefault()}>
+                                                    <ManageOrder triggerName={"Edit"} triggerVariant={"default"}
+                                                                 existingOrder={order}
+                                                                 onOrderCreated={(order) => setOrders(prevState => [...(prevState ?? []), order])}/>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem className={"justify-center"}>
                                                     <Button type={"button"} variant={"destructive"}

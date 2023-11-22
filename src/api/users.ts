@@ -25,11 +25,15 @@ export const getMyData = async () => {
         {headers: {Authorization: "Bearer " + cookie.get('jwtToken')}})
         .then(value => value.data);
 }
-/*
-export const createOrder = async (data) => {
-    return await httpRequest.post(`/orders/createOrder`, data)
-        .then(value => value.data)
+
+export const deleteUser = async (id: number) => {
+    const cookie = new Cookies();
+    return await httpRequest.delete<UserData>(`v1/private/delete/${id}`,
+        {headers: {Authorization: "Bearer " + cookie.get('jwtToken')}})
+        .then(value => value.data);
 }
+/*
+
 
 export const updateOrder = async (data) => {
     return await httpRequest.patch(`/orders/updateOrder`, data)
