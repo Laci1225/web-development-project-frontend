@@ -4,7 +4,8 @@ export interface UserData {
     id: number
     username: string,
     email: string,
-    orders: Order[]
+    orders: Order[],
+    role: string
 }
 
 

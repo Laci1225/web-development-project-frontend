@@ -10,9 +10,11 @@ import LoadingButton from "@/form/LoadingButton";
 import Cookies from "universal-cookie";
 import {toast} from "@/components/ui/use-toast";
 import {Toaster} from "@/components/ui/toaster";
+import {useRouter} from "next/router";
 
 
 export default function Authenticate() {
+    const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [showError, setShowError] = useState(false);
     const form = useForm<z.infer<typeof loginSchema>>({
@@ -35,6 +37,8 @@ export default function Authenticate() {
                     description: `User: ${form.getValues("username")} authenticated`,
                 })
                 setIsSubmitting(false)
+                router.push('/me').then(() => window.location.reload());
+
             })
             .catch(error => {
                 if (error.response && error.response.status === 403) {
@@ -44,7 +48,6 @@ export default function Authenticate() {
                     });
                     setShowError(true);
                     setIsSubmitting(false)
-
                 }
             });
     }
@@ -106,7 +109,7 @@ shadow-muted-foreground
                                     )}
                                 />
                             </div>
-                            <LoadingButton type="submit" isLoading={isSubmitting}/>
+                            <LoadingButton type="submit" isLoading={isSubmitting} value={"Login"}/>
                         </form>
                     </Form>
                 </div>

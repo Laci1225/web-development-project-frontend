@@ -8,8 +8,8 @@ import {z} from "zod";
 import {Input} from "@/components/ui/input";
 import LoadingButton from "@/form/LoadingButton";
 import {toast} from "@/components/ui/use-toast";
-import Link from "next/link";
 import {Toaster} from "@/components/ui/toaster";
+import {router} from "next/client";
 
 
 export default function Register() {
@@ -31,13 +31,10 @@ export default function Register() {
             value => {
                 toast({
                     title: "Successfully registered",
-                    description: (
-                        <>
-                            Go to <Link className={"underline font-extrabold"} href="/authenticate">login</Link> page
-                        </>
-                    ),
                 })
                 setIsSubmitting(false)
+                router.replace('/authenticate');
+
             })
             .catch(error => {
                 if (error.response && error.response.status === 400) {
@@ -120,7 +117,7 @@ shadow-muted-foreground
                                     )}
                                 />
                             </div>
-                            <LoadingButton type="submit" isLoading={isSubmitting}/>
+                            <LoadingButton type="submit" isLoading={isSubmitting} value={"Register"}/>
                         </form>
                     </Form>
                 </div>

@@ -8,9 +8,21 @@ import {
 } from "@/components/ui/navigation-menu"
 import Link from "next/link";
 import 'material-icons/iconfont/material-icons.css';
+import {getMyData} from "@/api/users";
+import {useEffect, useState} from "react";
+import {UserData} from "@/model/userData";
 
 
 export default function App({Component, pageProps}: AppProps) {
+    const [data, setData] = useState<UserData>();
+    useEffect(() => {
+        getMyData().then(value => setData(value))
+            .catch(error => {
+                if (error.response && error.response.status === 403) {
+                    console.log(error)
+                }
+            });
+    }, []);
     return (
         <>
             <NavigationMenu className={"flex w-full justify-between bg-gray-600 h-10"}>
@@ -31,6 +43,14 @@ export default function App({Component, pageProps}: AppProps) {
                                 Users
                             </NavigationMenuLink>
                         </Link>
+                    </NavigationMenuItem>
+                </NavigationMenuList>
+                <NavigationMenuList>
+                    <NavigationMenuItem className={"px-5"}>
+                        {data ? data.username : ""}
+                    </NavigationMenuItem>
+                    <NavigationMenuItem className={"px-5"}>
+                        {data ? data.role : ""}
                     </NavigationMenuItem>
                 </NavigationMenuList>
                 <NavigationMenuList>
