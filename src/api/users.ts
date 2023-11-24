@@ -32,15 +32,3 @@ export const deleteUser = async (id: number) => {
         {headers: {Authorization: "Bearer " + cookie.get('jwtToken')}})
         .then(value => value.data);
 }
-/*
-
-
-export const updateOrder = async (data) => {
-    return await httpRequest.patch(`/orders/updateOrder`, data)
-        .then(value => value.data)
-}
-
-export const deleteOrder = async (id: number) => {
-    return await httpRequest.delete(`/orders/deleteOrder/${id}`)
-        .then(value => value.data)
-}*/

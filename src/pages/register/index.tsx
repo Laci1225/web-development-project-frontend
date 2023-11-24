@@ -33,7 +33,7 @@ export default function Register() {
                     title: "Successfully registered",
                 })
                 setIsSubmitting(false)
-                router.replace('/authenticate');
+                router.push('/authenticate');
 
             })
             .catch(error => {

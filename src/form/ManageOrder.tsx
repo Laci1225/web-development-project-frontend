@@ -10,6 +10,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@
 import {Input} from "@/components/ui/input";
 import {createOrder, updateOrder} from "@/api/orders";
 import {Order} from "@/model/orderData";
+import LoadingButton from "@/form/LoadingButton";
 
 interface OrderFormProps {
     onOrderCreated: (order: Order) => void;
@@ -128,7 +129,7 @@ export default function ManageOrder({onOrderCreated, existingOrder, triggerVaria
                             />
                         </div>
                         <DialogFooter>
-                            <Button type={"submit"}>{triggerName}</Button>
+                            <LoadingButton isLoading={isSubmitting} value={"Add"} type={"submit"}/>
                         </DialogFooter>
                     </form>
                 </Form>

@@ -11,9 +11,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {Toaster} from "@/components/ui/toaster";
-import {getOrders} from "@/api/orders";
+import {deleteOrder, getOrders} from "@/api/orders";
 import ManageOrder from "@/form/ManageOrder";
 import {Order} from "@/model/orderData";
+import {toast} from "@/components/ui/use-toast";
 
 export default function Users() {
     const [data, setData] = useState<UserData>();
@@ -35,7 +36,7 @@ export default function Users() {
                     router.replace('/403');
                 }
             });
-    }, []);
+    }, [router]);
 
     return (
         <div className={"container w-4/6 py-28"}>
@@ -71,19 +72,21 @@ export default function Users() {
                                             <DropdownMenuTrigger>
                                                 <span className="material-icons-outlined">more_horiz</span>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent className={"min-w-8"}>
+                                            <DropdownMenuContent className={"max-w-8 justify-center flex flex-col"}>
                                                 <DropdownMenuSeparator/>
-                                                <DropdownMenuItem className={"justify-center"}
-                                                                  onClick={(event) => event.preventDefault()}>
+                                                <DropdownMenuItem className={"justify-center"} asChild>
                                                     <ManageOrder triggerName={"Edit"} triggerVariant={"default"}
                                                                  existingOrder={order}
-                                                                 onOrderCreated={(order) => setOrders(prevState => [...(prevState ?? []), order])}/>
+                                                                 onOrderCreated={(newOrder) => {
+                                                                     const updatedOrders = orders.filter(value => value.id !== newOrder.id);
+                                                                     setOrders([...updatedOrders, newOrder]);
+                                                                 }}
+                                                    />
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem className={"justify-center"}>
+                                                <DropdownMenuItem className={"justify-center"} asChild>
                                                     <Button type={"button"} variant={"destructive"}
-                                                            onClick={async (event) => {
-                                                                event.preventDefault()
-                                                                /*await deleteUser(user.id)
+                                                            onClick={async () => {
+                                                                await deleteOrder(order.id)
                                                                     .then((deletedUser) =>
                                                                         toast({
                                                                             variant: "default",
@@ -91,8 +94,8 @@ export default function Users() {
                                                                             description: `${deletedUser.username} deleted`
                                                                         })
                                                                     )
-                                                                const updatedUsers = usersData.filter(c => c.id !== user.id)
-                                                                setUsersData(updatedUsers);*/
+                                                                const updatedOrders = orders.filter(c => c.id !== order.id)
+                                                                setOrders(updatedOrders);
                                                             }}><span
                                                         className="material-icons-outlined">delete</span>
                                                     </Button>
