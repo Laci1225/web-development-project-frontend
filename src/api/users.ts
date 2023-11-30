@@ -25,12 +25,6 @@ export const getMyData = async () => {
         {headers: {Authorization: "Bearer " + cookie.get('jwtToken')}})
         .then(value => value.data);
 }
-export const getMyDataServer = async () => {
-    const cookie = new Cookies();
-    return await httpRequestServer.get<UserData>("v1/private/getMyData",
-        {headers: {Authorization: "Bearer " + cookie.get('jwtToken')}})
-        .then(value => value.data);
-}
 
 export const deleteUser = async (id: number) => {
     const cookie = new Cookies();
