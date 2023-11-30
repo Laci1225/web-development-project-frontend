@@ -11,9 +11,13 @@ import 'material-icons/iconfont/material-icons.css';
 import {getMyData} from "@/api/users";
 import {useEffect, useState} from "react";
 import {UserData} from "@/model/userData";
+import {deleteCookie} from "undici-types";
+import Cookies from "universal-cookie";
+import {useRouter} from "next/router";
 
 
 export default function App({Component, pageProps}: AppProps) {
+    const router = useRouter()
     const [data, setData] = useState<UserData>();
     useEffect(() => {
         getMyData().then(value => setData(value))
@@ -32,14 +36,16 @@ export default function App({Component, pageProps}: AppProps) {
                 <NavigationMenuList>
                     <NavigationMenuItem className={"px-5"}>
                         <Link href="/me" legacyBehavior passHref>
-                            <NavigationMenuLink>
+                            <NavigationMenuLink
+                                className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-1 px-2 rounded">
                                 My data
                             </NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
                     <NavigationMenuItem className={"px-5"}>
                         <Link href="/users" legacyBehavior passHref>
-                            <NavigationMenuLink>
+                            <NavigationMenuLink
+                                className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-1 px-2 rounded">
                                 Users
                             </NavigationMenuLink>
                         </Link>
@@ -54,20 +60,41 @@ export default function App({Component, pageProps}: AppProps) {
                     </NavigationMenuItem>
                 </NavigationMenuList>
                 <NavigationMenuList>
-                    <NavigationMenuItem className={"px-5"}>
-                        <Link href="/register" legacyBehavior passHref>
-                            <NavigationMenuLink>
-                                Register
-                            </NavigationMenuLink>
-                        </Link>
-                    </NavigationMenuItem>
-                    <NavigationMenuItem className={"px-5"}>
-                        <Link href="/authenticate" legacyBehavior passHref>
-                            <NavigationMenuLink>
-                                Login
-                            </NavigationMenuLink>
-                        </Link>
-                    </NavigationMenuItem>
+                    {data ? (
+                        <NavigationMenuItem className={"px-5"}>
+                            <Link href="/" legacyBehavior passHref>
+                                <NavigationMenuLink
+                                    className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-1 px-2 rounded"
+                                    onClick={() => {
+                                        const cookie = new Cookies();
+                                        cookie.remove('jwtToken', {});
+                                        router.push("/").then(() => window.location.reload())
+                                    }}>
+                                    Log out
+                                </NavigationMenuLink>
+                            </Link>
+                        </NavigationMenuItem>
+                    ) : (
+                        <>
+                            <NavigationMenuItem className={"px-5"}>
+                                <Link href="/register" legacyBehavior passHref>
+                                    <NavigationMenuLink
+                                        className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-1 px-2 rounded">
+                                        Register
+                                    </NavigationMenuLink>
+                                </Link>
+                            </NavigationMenuItem>
+                            <NavigationMenuItem className={"px-5"}>
+                                <Link href="/authenticate" legacyBehavior passHref>
+                                    <NavigationMenuLink
+                                        className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-1 px-2 rounded">
+                                        Login
+                                    </NavigationMenuLink>
+                                </Link>
+                            </NavigationMenuItem>
+                        </>
+
+                    )}
                 </NavigationMenuList>
             </NavigationMenu>
             <Component {...pageProps} />
