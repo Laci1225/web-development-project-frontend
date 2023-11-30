@@ -1,4 +1,4 @@
-import {getMyData} from "@/api/users";
+import {getMyDataServer} from "@/api/users";
 import {useState, useEffect} from "react";
 import {UserData} from "@/model/userData";
 import {useRouter} from "next/router";
@@ -15,20 +15,31 @@ import {deleteOrder, getOrders} from "@/api/orders";
 import ManageOrder from "@/form/ManageOrder";
 import {Order} from "@/model/orderData";
 import {toast} from "@/components/ui/use-toast";
+import {GetServerSideProps, InferGetServerSidePropsType} from "next";
 
-export default function Users() {
-    const [data, setData] = useState<UserData>();
+export const getServerSideProps = (async () => {
+    try {
+        const me = await getMyDataServer();
+        return {
+            props: {
+                me
+            }
+        };
+    } catch (error) {
+        return {
+            redirect: {
+                destination: '/403',
+                permanent: true,
+            },
+        };
+    }
+}) satisfies GetServerSideProps<{ me: UserData }>;
+export default function Me({me}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    const [data, setData] = useState<UserData>(me);
     const [orders, setOrders] = useState<Order[]>([]);
     const router = useRouter();
 
     useEffect(() => {
-        getMyData()
-            .then(value => setData(value))
-            .catch(error => {
-                if (error.response && error.response.status === 403) {
-                    router.replace('/403');
-                }
-            });
         getOrders()
             .then(value => setOrders(value))
             .catch(error => {
