@@ -90,11 +90,56 @@ function RemoveUser({user, usersData, setUsersData}: RemoveUserProps) {
     )
 }
 
+function EditUser({user, usersData, setUsersData}: RemoveUserProps) {
+
+}
+
 export default function Users({users}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [usersData, setUsersData] = useState<UserData[]>([])
+    const [sortConfig, setSortConfig] = useState<{ key: keyof UserData, direction: 'asc' | 'desc' }>({
+        key: 'username',
+        direction: 'asc'
+    });
     useEffect(() => {
         setUsersData(users);
     }, [users])
+    const sortUsers = (key: keyof UserData) => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({key, direction});
+
+        const sortedUsers = [...usersData].sort((a, b) => {
+            if (direction === 'asc') {
+                return a[key] > b[key] ? 1 : -1;
+            } else {
+                return b[key] > a[key] ? 1 : -1;
+            }
+        });
+        setUsersData(sortedUsers);
+    };
+
+    const renderTableHeaders = () => {
+        const headers: { label: string; key: keyof UserData }[] = [
+            {label: 'Username', key: 'username'},
+            {label: 'Email', key: 'email'},
+            {label: 'Orders', key: 'orders'},
+        ];
+
+        return headers.map((header, index) => (
+            <TableHead
+                key={index}
+                className="text-center cursor-pointer"
+                onClick={() => sortUsers(header.key)}
+            >
+                {header.label}{' '}
+                <span>
+                {sortConfig.direction === 'asc' ? '↑' : '↓'}
+            </span>
+            </TableHead>
+        ));
+    };
     /*
     const onUserUpdated = (updatedUser: UserData) => {
         const updatedUsers = usersData.map((user) =>
@@ -110,9 +155,7 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
             <Table className={"border border-gray-700 rounded"}>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="text-center">Username</TableHead>
-                        <TableHead className="text-center">Email</TableHead>
-                        <TableHead className="text-center">Orders</TableHead>
+                        {renderTableHeaders()}
                         <TableHead className="px-5"></TableHead>
                     </TableRow>
                 </TableHeader>
@@ -137,8 +180,11 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent className={"min-w-8"}>
                                                 <DropdownMenuSeparator/>
-                                                <DropdownMenuItem className={"justify-center"}>
+                                                <DropdownMenuItem className={"justify-center"}
+                                                                  onClick={e => e.preventDefault()}>
                                                     Edit
+                                                    <EditUser user={user} usersData={usersData}
+                                                              setUsersData={setUsersData}/>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem className={"justify-center"}
                                                                   onClick={e => e.preventDefault()}>
