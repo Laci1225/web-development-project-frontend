@@ -91,21 +91,18 @@ function RemoveUser({user, usersData, setUsersData}: RemoveUserProps) {
 }
 
 function EditUser({user, usersData, setUsersData}: RemoveUserProps) {
-
+    return (<></>)
 }
 
 export default function Users({users}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [usersData, setUsersData] = useState<UserData[]>([])
-    const [sortConfig, setSortConfig] = useState<{ key: keyof UserData, direction: 'asc' | 'desc' }>({
-        key: 'username',
-        direction: 'asc'
-    });
+    const [sortConfig, setSortConfig] = useState<{ key: keyof UserData, direction: 'asc' | 'desc' }>();
     useEffect(() => {
         setUsersData(users);
     }, [users])
     const sortUsers = (key: keyof UserData) => {
         let direction: 'asc' | 'desc' = 'asc';
-        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+        if (sortConfig?.key === key && sortConfig.direction === 'asc') {
             direction = 'desc';
         }
         setSortConfig({key, direction});
@@ -127,18 +124,23 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
             {label: 'Orders', key: 'orders'},
         ];
 
-        return headers.map((header, index) => (
-            <TableHead
-                key={index}
-                className="text-center cursor-pointer"
-                onClick={() => sortUsers(header.key)}
-            >
-                {header.label}{' '}
-                <span>
-                {sortConfig.direction === 'asc' ? '↑' : '↓'}
-            </span>
-            </TableHead>
-        ));
+        return headers.map((header, index) => {
+                let arrow = '↕';
+                if (sortConfig?.key === header.key) {
+                    arrow = sortConfig.direction === 'asc' ? '↑' : '↓';
+                }
+                return (
+                    <TableHead
+                        key={index}
+                        className="text-center cursor-pointer"
+                        onClick={() => sortUsers(header.key)}
+                    >
+                        {header.label}{' '}
+                        <span>{arrow}</span>
+                    </TableHead>
+                )
+            }
+        );
     };
     /*
     const onUserUpdated = (updatedUser: UserData) => {

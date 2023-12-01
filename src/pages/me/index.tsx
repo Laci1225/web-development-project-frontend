@@ -1,10 +1,9 @@
 import {useState, useEffect} from "react";
-import {UserData} from "@/model/userData";
-import {useRouter} from "next/router";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {
     DropdownMenu,
-    DropdownMenuContent, DropdownMenuItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
@@ -14,21 +13,25 @@ import {deleteOrder, getOrders} from "@/api/orders";
 import ManageOrder from "@/form/ManageOrder";
 import {Order} from "@/model/orderData";
 import {toast} from "@/components/ui/use-toast";
+import {useRouter} from "next/router";
+import {UserData} from "@/model/userData";
 import {getMyData} from "@/api/users";
 
 export default function Me() {
-    getMyData()
-        .then(value => setData(value))
-        .catch(error => {
-            if (error.response && error.response.status === 403) {
-                router.replace('/403');
-            }
-        });
+    const router = useRouter();
     const [data, setData] = useState<UserData>();
     const [orders, setOrders] = useState<Order[]>([]);
-    const router = useRouter();
+    const [sortConfig, setSortConfig] = useState<{ key: keyof Order, direction: 'asc' | 'desc' }>();
 
     useEffect(() => {
+        getMyData()
+            .then(value => setData(value))
+            .catch(error => {
+                if (error.response && error.response.status === 403) {
+                    router.replace('/403');
+                }
+            });
+
         getOrders()
             .then(value => setOrders(value))
             .catch(error => {
@@ -38,6 +41,48 @@ export default function Me() {
             });
     }, [router]);
 
+    const sortOrders = (key: keyof Order) => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig?.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({key, direction});
+
+        const sortedOrders = [...orders].sort((a, b) => {
+            if (direction === 'asc') {
+                return a[key] > b[key] ? 1 : -1;
+            } else {
+                return b[key] > a[key] ? 1 : -1;
+            }
+        });
+        setOrders(sortedOrders);
+    };
+
+    const renderTableHeaders = () => {
+        const headers: { label: string; key: keyof Order }[] = [
+            {label: 'Name', key: 'name'},
+            {label: 'Amount', key: 'amount'},
+            {label: 'Weight', key: 'weight'},
+        ];
+
+        return headers.map((header, index) => {
+                let arrow = '↕';
+                if (sortConfig?.key === header.key) {
+                    arrow = sortConfig.direction === 'asc' ? '↑' : '↓';
+                }
+                return (
+                    <TableHead
+                        key={index}
+                        className="text-center cursor-pointer"
+                        onClick={() => sortOrders(header.key)}
+                    >
+                        {header.label}{' '}
+                        <span>{arrow}</span>
+                    </TableHead>
+                )
+            }
+        );
+    };
     return (
         <>
             {data && (
@@ -49,10 +94,7 @@ export default function Me() {
                     <Table className={"border border-gray-700 rounded"}>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="text-center">Name</TableHead>
-                                <TableHead className="text-center">Amount</TableHead>
-                                <TableHead className="text-center">Weight</TableHead>
-                                <TableHead className="px-5"></TableHead>
+                                {renderTableHeaders()}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
