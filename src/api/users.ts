@@ -32,3 +32,16 @@ export const deleteUser = async (id: number) => {
         {headers: {Authorization: "Bearer " + cookie.get('jwtToken')}})
         .then(value => value.data);
 }
+export const getUserData = async (id: number) => {
+    const cookie = new Cookies();
+    return await httpRequest.get<UserDataRegistration>(`v1/private/getUserData/${id}`,
+        {headers: {Authorization: "Bearer " + cookie.get('jwtToken')}})
+        .then(value => value.data);
+}
+
+export const updateUser = async (username: string, data: UserDataRegistration) => {
+    const cookie = new Cookies();
+    return await httpRequest.patch(`v1/private/update/${username}`, data,
+        {headers: {Authorization: "Bearer " + cookie.get('jwtToken')}})
+        .then(value => value.data)
+}

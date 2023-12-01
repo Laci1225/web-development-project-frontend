@@ -30,6 +30,7 @@ import {
 import {Button} from "@/components/ui/button";
 import {Toaster} from "@/components/ui/toaster";
 import {deleteUser, getAllUserServer} from "@/api/users";
+import UpdateUser from "@/form/UpdateUser";
 
 export const getServerSideProps = (async () => {
     const users = await getAllUserServer()
@@ -90,13 +91,17 @@ function RemoveUser({user, usersData, setUsersData}: RemoveUserProps) {
     )
 }
 
-function EditUser({user, usersData, setUsersData}: RemoveUserProps) {
-    return (<></>)
+function EditUser({user}: RemoveUserProps) {
+
+    return (<UpdateUser user={user}/>)
 }
 
 export default function Users({users}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [usersData, setUsersData] = useState<UserData[]>([])
-    const [sortConfig, setSortConfig] = useState<{ key: keyof UserData, direction: 'asc' | 'desc' }>();
+    const [sortConfig, setSortConfig] = useState<{
+        key: keyof UserData,
+        direction: 'asc' | 'desc'
+    }>();
     useEffect(() => {
         setUsersData(users);
     }, [users])
@@ -118,7 +123,10 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
     };
 
     const renderTableHeaders = () => {
-        const headers: { label: string; key: keyof UserData }[] = [
+        const headers: {
+            label: string;
+            key: keyof UserData
+        }[] = [
             {label: 'Username', key: 'username'},
             {label: 'Email', key: 'email'},
             {label: 'Orders', key: 'orders'},
@@ -142,14 +150,6 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
             }
         );
     };
-    /*
-    const onUserUpdated = (updatedUser: UserData) => {
-        const updatedUsers = usersData.map((user) =>
-            user.id === updatedUser.id ? updatedUser : user
-        );
-        setUsersData(updatedUsers)
-    }*/
-
     return (
         <div className={"container w-4/6 py-28"}>
             <div className={"flex justify-between px-6 pb-6"}>Users
@@ -182,9 +182,7 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent className={"min-w-8"}>
                                                 <DropdownMenuSeparator/>
-                                                <DropdownMenuItem className={"justify-center"}
-                                                                  onClick={e => e.preventDefault()}>
-                                                    Edit
+                                                <DropdownMenuItem className={"justify-center"} asChild>
                                                     <EditUser user={user} usersData={usersData}
                                                               setUsersData={setUsersData}/>
                                                 </DropdownMenuItem>
