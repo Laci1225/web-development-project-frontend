@@ -36,7 +36,7 @@ export default function UpdateUser({user}: RegisterPros) {
         updateUser(user.username, values).then(
             value => {
                 toast({
-                    title: "Successfully registered",
+                    title: "Successfully updated",
                 })
                 console.log(value)
                 setIsSubmitting(false)
@@ -70,7 +70,7 @@ export default function UpdateUser({user}: RegisterPros) {
                     <Button onClick={() => {
                         setDialogOpen(true)
                     }} variant={"ghost"}
-                    >Edit</Button>
+                    ><span className="material-icons-outlined">edit</span></Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[400px] h-[70vh] shadow-muted-foreground">
                     <Form {...form}>

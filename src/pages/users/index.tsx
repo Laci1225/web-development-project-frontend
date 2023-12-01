@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {Toaster} from "@/components/ui/toaster";
-import {deleteUser, getAllUserServer} from "@/api/users";
+import {deleteUser, getAllUserServer, getMyData} from "@/api/users";
 import UpdateUser from "@/form/UpdateUser";
 
 export const getServerSideProps = (async () => {
@@ -93,7 +93,11 @@ function RemoveUser({user, usersData, setUsersData}: RemoveUserProps) {
 
 function EditUser({user}: RemoveUserProps) {
 
-    return (<UpdateUser user={user}/>)
+    return (
+        <div className="w-full flex justify-center">
+            <UpdateUser user={user}/>
+        </div>
+    );
 }
 
 export default function Users({users}: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -102,6 +106,14 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
         key: keyof UserData,
         direction: 'asc' | 'desc'
     }>();
+    const [myData, setMyData] = useState<UserData>();
+
+    getMyData().then(value => setMyData(value))
+        .catch(error => {
+            if (error.response && error.response.status === 403) {
+                console.log(error)
+            }
+        });
     useEffect(() => {
         setUsersData(users);
     }, [users])
@@ -182,15 +194,28 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent className={"min-w-8"}>
                                                 <DropdownMenuSeparator/>
-                                                <DropdownMenuItem className={"justify-center"} asChild>
-                                                    <EditUser user={user} usersData={usersData}
-                                                              setUsersData={setUsersData}/>
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem className={"justify-center"}
-                                                                  onClick={e => e.preventDefault()}>
-                                                    <RemoveUser user={user} usersData={usersData}
-                                                                setUsersData={setUsersData}/>
-                                                </DropdownMenuItem>
+                                                {myData?.role === 'ADMIN' ? (
+                                                    <>
+                                                        <DropdownMenuItem className={"justify-center"} asChild>
+                                                            <EditUser user={user} usersData={usersData}
+                                                                      setUsersData={setUsersData}/>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem className={"justify-center"}
+                                                                          onClick={e => e.preventDefault()}>
+                                                            <RemoveUser user={user} usersData={usersData}
+                                                                        setUsersData={setUsersData}/>
+                                                        </DropdownMenuItem>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <DropdownMenuItem className={"justify-center"} disabled>
+                                                            <span className="material-icons-outlined">edit</span>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem className={"justify-center"} disabled>
+                                                            <span className="material-icons-outlined">delete</span>
+                                                        </DropdownMenuItem>
+                                                    </>
+                                                )}
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>
