@@ -11,7 +11,6 @@ import 'material-icons/iconfont/material-icons.css';
 import {getMyData} from "@/api/users";
 import {useEffect, useState} from "react";
 import {UserData} from "@/model/userData";
-import {deleteCookie} from "undici-types";
 import Cookies from "universal-cookie";
 import {useRouter} from "next/router";
 
@@ -65,10 +64,17 @@ export default function App({Component, pageProps}: AppProps) {
                             <Link href="/" legacyBehavior passHref>
                                 <NavigationMenuLink
                                     className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-1 px-2 rounded"
-                                    onClick={() => {
+                                    onClick={async () => {
                                         const cookie = new Cookies();
                                         cookie.remove('jwtToken', {});
-                                        router.push("/").then(() => window.location.reload())
+                                        try {
+                                            const cookie = new Cookies();
+                                            setData(undefined);
+                                            cookie.remove('jwtToken', {});
+                                            await router.push("/");
+                                        } catch (error) {
+                                            console.error("Logout error:", error);
+                                        }
                                     }}>
                                     Log out
                                 </NavigationMenuLink>
