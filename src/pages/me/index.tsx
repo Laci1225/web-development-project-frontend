@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {
     DropdownMenu,
@@ -39,7 +39,7 @@ export default function Me() {
                     router.replace('/403');
                 }
             });
-    }, [router]);
+    }, []);
 
     const sortOrders = (key: keyof Order) => {
         let direction: 'asc' | 'desc' = 'asc';
@@ -117,10 +117,14 @@ export default function Me() {
                                                         <span className="material-icons-outlined">more_horiz</span>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent
-                                                        className={"max-w-8 justify-center flex flex-col"}>
+                                                        className={"min-w-8 justify-center"}>
                                                         <DropdownMenuSeparator/>
-                                                        <DropdownMenuItem className={"justify-center"} asChild>
-                                                            <ManageOrder triggerName={"Edit"} triggerVariant={"default"}
+                                                        <DropdownMenuItem className={"justify-center w-full"} asChild>
+                                                            <ManageOrder triggerName={
+                                                                <span
+                                                                    className="material-icons-outlined">edit</span>
+                                                            }
+                                                                         triggerVariant={"ghost"}
                                                                          existingOrder={order}
                                                                          onOrderCreated={(newOrder) => {
                                                                              const updatedOrders = orders.filter(value => value.id !== newOrder.id);
@@ -128,8 +132,9 @@ export default function Me() {
                                                                          }}
                                                             />
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem className={"justify-center"} asChild>
-                                                            <Button type={"button"} variant={"destructive"}
+                                                        <DropdownMenuItem className={"justify-center"}>
+                                                            <Button className={"justify-center"} type={"button"}
+                                                                    variant={"destructive"}
                                                                     onClick={async () => {
                                                                         await deleteOrder(order.id)
                                                                             .then((deletedUser) =>

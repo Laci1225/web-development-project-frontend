@@ -19,6 +19,7 @@ export default function App({Component, pageProps}: AppProps) {
     const router = useRouter()
     const [data, setData] = useState<UserData>();
     useEffect(() => {
+
         getMyData().then(value => setData(value))
             .catch(error => {
                 if (error.response && error.response.status === 403) {

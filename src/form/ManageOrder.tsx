@@ -74,11 +74,24 @@ export default function ManageOrder({onOrderCreated, existingOrder, triggerVaria
     return (
         <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-                <Button onClick={() => {
-                    setDialogOpen(true)
-                    existingOrder || form.reset()
-                }} variant={triggerVariant}
-                >{triggerName}</Button>
+                {existingOrder ? (
+                        <>
+                            <Button className={"flex w-full justify-center"} onClick={() => {
+                                setDialogOpen(true)
+                                existingOrder || form.reset()
+                            }} variant={triggerVariant}
+                            >{triggerName}</Button>
+                        </>
+                    ) :
+                    <>
+                        <Button className={"justify-center"} onClick={() => {
+                            setDialogOpen(true)
+                            existingOrder || form.reset()
+                        }} variant={triggerVariant}
+                        >{triggerName}</Button>
+                    </>
+                }
+
             </DialogTrigger>
             <DialogContent className="sm:max-w-[400px] h-[60vh] shadow-muted-foreground">
                 <DialogHeader>

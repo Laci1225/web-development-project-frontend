@@ -107,13 +107,14 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
         direction: 'asc' | 'desc'
     }>();
     const [myData, setMyData] = useState<UserData>();
-
-    getMyData().then(value => setMyData(value))
-        .catch(error => {
-            if (error.response && error.response.status === 403) {
-                console.log(error)
-            }
-        });
+    useEffect(() => {
+        getMyData().then(value => setMyData(value))
+            .catch(error => {
+                if (error.response && error.response.status === 403) {
+                    console.log(error)
+                }
+            });
+    }, []);
     useEffect(() => {
         setUsersData(users);
     }, [users])
@@ -163,7 +164,7 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
         );
     };
     return (
-        <div className={"container w-4/6 py-28"}>
+        <div className={"container w-4/6 py-28 h-[90vh]"}>
             <div className={"flex justify-between px-6 pb-6"}>Users
             </div>
             <Table className={"border border-gray-700 rounded"}>
@@ -176,55 +177,109 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
                 <TableBody>
                     {
                         usersData && usersData.length !== 0 ? (
-                            usersData.map((user) => (
-                                <TableRow key={user.id} className={"hover:bg-gray-200"}>
-                                    <TableCell className="text-center">
-                                        {user.username}
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                        {user.email}
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                        {user.orders.length} piece of order
-                                    </TableCell>
-                                    <TableCell className="p-1 text-center">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger>
-                                                <span className="material-icons-outlined">more_horiz</span>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent className={"min-w-8"}>
-                                                <DropdownMenuSeparator/>
-                                                {myData?.role === 'ADMIN' ? (
-                                                    <>
-                                                        <DropdownMenuItem className={"justify-center"} asChild>
-                                                            <EditUser user={user} usersData={usersData}
-                                                                      setUsersData={setUsersData}/>
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem className={"justify-center"}
-                                                                          onClick={e => e.preventDefault()}>
-                                                            <RemoveUser user={user} usersData={usersData}
-                                                                        setUsersData={setUsersData}/>
-                                                        </DropdownMenuItem>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <DropdownMenuItem className={"justify-center"} disabled>
-                                                            <span className="material-icons-outlined">edit</span>
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem className={"justify-center"} disabled>
-                                                            <span className="material-icons-outlined">delete</span>
-                                                        </DropdownMenuItem>
-                                                    </>
-                                                )}
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
+                                usersData.map((user) => (<>
+                                    {user.username === myData?.username ? (
+                                        <>
+                                            <TableRow key={user.id} className={"hover:bg-gray-200 bg-green-500"}>
+                                                <TableCell className="text-center">
+                                                    {user.username}
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    {user.email}
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    {user.orders.length} piece of order
+                                                </TableCell>
+                                                <TableCell className="p-1 text-center">
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger>
+                                                            <span className="material-icons-outlined">more_horiz</span>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent className={"min-w-8"}>
+                                                            <DropdownMenuSeparator/>
+                                                            {myData?.role === 'ADMIN' ? (
+                                                                <>
+                                                                    <DropdownMenuItem className={"justify-center"} asChild>
+                                                                        <EditUser user={user} usersData={usersData}
+                                                                                  setUsersData={setUsersData}/>
+                                                                    </DropdownMenuItem>
+                                                                    <DropdownMenuItem className={"justify-center"}
+                                                                                      onClick={e => e.preventDefault()}>
+                                                                        <RemoveUser user={user} usersData={usersData}
+                                                                                    setUsersData={setUsersData}/>
+                                                                    </DropdownMenuItem>
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <DropdownMenuItem className={"w-8 justify-center"}
+                                                                                      disabled>
+                                                                        <span
+                                                                            className="material-icons-outlined">edit</span>
+                                                                    </DropdownMenuItem>
+                                                                    <DropdownMenuItem className={"w-8 justify-center"}
+                                                                                      disabled>
+                                                                        <span
+                                                                            className="material-icons-outlined">delete</span>
+                                                                    </DropdownMenuItem>
+                                                                </>
+                                                            )}
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </TableCell>
+                                            </TableRow>
+                                        </>
+                                    ) : (<>
+                                        <TableRow key={user.id} className={"hover:bg-gray-200"}>
+                                            <TableCell className="text-center">
+                                                {user.username}
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                {user.email}
+                                            </TableCell>
+                                            <TableCell className="text-center">
+                                                {user.orders.length} piece of order
+                                            </TableCell>
+                                            <TableCell className="p-1 text-center">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger>
+                                                        <span className="material-icons-outlined">more_horiz</span>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent className={"min-w-8"}>
+                                                        <DropdownMenuSeparator/>
+                                                        {myData?.role === 'ADMIN' ? (
+                                                            <>
+                                                                <DropdownMenuItem className={"justify-center"} asChild>
+                                                                    <EditUser user={user} usersData={usersData}
+                                                                              setUsersData={setUsersData}/>
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuItem className={"justify-center"}
+                                                                                  onClick={e => e.preventDefault()}>
+                                                                    <RemoveUser user={user} usersData={usersData}
+                                                                                setUsersData={setUsersData}/>
+                                                                </DropdownMenuItem>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <DropdownMenuItem className={"w-8 justify-center"}
+                                                                                  disabled>
+                                                                    <span className="material-icons-outlined">edit</span>
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuItem className={"w-8 justify-center"} disabled>
+                                                                    <span className="material-icons-outlined">delete</span>
+                                                                </DropdownMenuItem>
+                                                            </>
+                                                        )}
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        </TableRow>
+                                    </>)}
+                                </>)))
+                            : (
+                                <TableRow>
+                                    <TableCell colSpan={5}>Nothing added</TableCell>
                                 </TableRow>
-                            ))) : (
-                            <TableRow>
-                                <TableCell colSpan={5}>Nothing added</TableCell>
-                            </TableRow>
-                        )}
+                            )}
                 </TableBody>
             </Table>
             <Toaster/>
