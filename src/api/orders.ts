@@ -8,21 +8,21 @@ export const getOrders = async (): Promise<Order[]> => {
         {headers: {Authorization: "Bearer " + cookie.get('jwtToken')}})
         .then(value => value.data);
 }
-export const createOrder = async (data: OrderInput) => {
+export const createOrder = async (data: OrderInput): Promise<Order> => {
     const cookie = new Cookies();
-    return await httpRequest.post(`v1/private/order/create`, data,
+    return await httpRequest.post<Order>(`v1/private/order/create`, data,
         {headers: {Authorization: "Bearer " + cookie.get('jwtToken')}})
         .then(value => value.data)
 }
-export const updateOrder = async (id: number, data: OrderInput) => {
+export const updateOrder = async (id: number, data: OrderInput): Promise<Order> => {
     const cookie = new Cookies();
-    return await httpRequest.patch(`v1/private/order/update/${id}`, data,
+    return await httpRequest.patch<Order>(`v1/private/order/update/${id}`, data,
         {headers: {Authorization: "Bearer " + cookie.get('jwtToken')}})
         .then(value => value.data)
 }
-export const deleteOrder = async (id: number) => {
+export const deleteOrder = async (id: number): Promise<Order> => {
     const cookie = new Cookies();
-    return await httpRequest.delete(`v1/private/order/delete/${id}`,
+    return await httpRequest.delete<Order>(`v1/private/order/delete/${id}`,
         {headers: {Authorization: "Bearer " + cookie.get('jwtToken')}})
         .then(value => value.data)
 }

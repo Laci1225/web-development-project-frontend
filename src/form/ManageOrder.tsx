@@ -93,7 +93,7 @@ export default function ManageOrder({onOrderCreated, existingOrder, triggerVaria
                 }
 
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[400px] h-[60vh] shadow-muted-foreground">
+            <DialogContent className="sm:max-w-[400px] max-h-[90vh] shadow-muted-foreground">
                 <DialogHeader>
                     <DialogTitle>{triggerName} an order</DialogTitle>
                 </DialogHeader>

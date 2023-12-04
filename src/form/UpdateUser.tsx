@@ -72,7 +72,7 @@ export default function UpdateUser({user}: RegisterPros) {
                     }} variant={"ghost"}
                     ><span className="material-icons-outlined">edit</span></Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[400px] h-[70vh] shadow-muted-foreground">
+                <DialogContent className="sm:max-w-[400px] max-h-[90vh] shadow-muted-foreground">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)}
                               className="flex justify-center flex-col space-y-4 mx-4 py-4">

@@ -13,22 +13,25 @@ import {deleteOrder, getOrders} from "@/api/orders";
 import ManageOrder from "@/form/ManageOrder";
 import {Order} from "@/model/orderData";
 import {toast} from "@/components/ui/use-toast";
-import {useRouter} from "next/router";
 import {UserData} from "@/model/userData";
 import {getMyData} from "@/api/users";
+import Custom403 from "@/pages/403";
 
 export default function Me() {
-    const router = useRouter();
     const [data, setData] = useState<UserData>();
     const [orders, setOrders] = useState<Order[]>([]);
-    const [sortConfig, setSortConfig] = useState<{ key: keyof Order, direction: 'asc' | 'desc' }>();
+    const [sortConfig, setSortConfig] = useState<{
+        key: keyof Order,
+        direction: 'asc' | 'desc'
+    }>();
+    const [error403, setError403] = useState(false);
 
     useEffect(() => {
         getMyData()
             .then(value => setData(value))
             .catch(error => {
                 if (error.response && error.response.status === 403) {
-                    router.replace('/403');
+                    setError403(true);
                 }
             });
 
@@ -36,10 +39,15 @@ export default function Me() {
             .then(value => setOrders(value))
             .catch(error => {
                 if (error.response && error.response.status === 403) {
-                    router.replace('/403');
+                    setError403(true);
                 }
             });
     }, []);
+    if (error403) {
+        return (
+            <Custom403/>
+        );
+    }
 
     const sortOrders = (key: keyof Order) => {
         let direction: 'asc' | 'desc' = 'asc';
@@ -59,7 +67,10 @@ export default function Me() {
     };
 
     const renderTableHeaders = () => {
-        const headers: { label: string; key: keyof Order }[] = [
+        const headers: {
+            label: string;
+            key: keyof Order
+        }[] = [
             {label: 'Name', key: 'name'},
             {label: 'Amount', key: 'amount'},
             {label: 'Weight', key: 'weight'},
@@ -137,11 +148,11 @@ export default function Me() {
                                                                     variant={"destructive"}
                                                                     onClick={async () => {
                                                                         await deleteOrder(order.id)
-                                                                            .then((deletedUser) =>
+                                                                            .then((deletedOrder) =>
                                                                                 toast({
                                                                                     variant: "default",
-                                                                                    title: "User data deleted successfully",
-                                                                                    description: `${deletedUser.username} deleted`
+                                                                                    title: "Order data deleted successfully",
+                                                                                    description: `${deletedOrder.name} deleted`
                                                                                 })
                                                                             )
                                                                         const updatedOrders = orders.filter(c => c.id !== order.id)

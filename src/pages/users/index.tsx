@@ -33,12 +33,21 @@ import {deleteUser, getAllUserServer, getMyData} from "@/api/users";
 import UpdateUser from "@/form/UpdateUser";
 
 export const getServerSideProps = (async () => {
-    const users = await getAllUserServer()
-    return {
-        props: {
-            users
+    try {
+        const users = await getAllUserServer()
+        return {
+            props: {
+                users
+            }
         }
-    };
+    } catch {
+        return {
+            redirect: {
+                destination: '/404',
+                permanent: false,
+            },
+        }
+    }
 }) satisfies GetServerSideProps<{
     users: UserData[]
 }>;
