@@ -1,6 +1,6 @@
 import {GetServerSideProps, InferGetServerSidePropsType} from "next";
 import {UserData} from "@/model/userData";
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -31,6 +31,7 @@ import {Button} from "@/components/ui/button";
 import {Toaster} from "@/components/ui/toaster";
 import {deleteUser, getAllUserServer, getMyData} from "@/api/users";
 import UpdateUser from "@/form/UpdateUser";
+import {useRouter} from "next/router";
 
 export const getServerSideProps = (async () => {
     try {
@@ -110,6 +111,7 @@ function EditUser({user}: RemoveUserProps) {
 }
 
 export default function Users({users}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    const router = useRouter()
     const [usersData, setUsersData] = useState<UserData[]>([])
     const [sortConfig, setSortConfig] = useState<{
         key: keyof UserData,
@@ -197,7 +199,10 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
                                                     {user.email}
                                                 </TableCell>
                                                 <TableCell className="text-center">
-                                                    {user.orders.length} piece of order
+                                                    <div className={"hover:cursor-pointer"}
+                                                         onClick={() => router.push(`${user.id}`)}>
+                                                        {user.orders.length} piece of order
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell className="p-1 text-center">
                                                     <DropdownMenu>
@@ -246,7 +251,10 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
                                                 {user.email}
                                             </TableCell>
                                             <TableCell className="text-center">
-                                                {user.orders.length} piece of order
+                                                <div className={"hover:cursor-pointer"}
+                                                     onClick={() => router.push(`${user.id}`)}>
+                                                    {user.orders.length} piece of order
+                                                </div>
                                             </TableCell>
                                             <TableCell className="p-1 text-center">
                                                 <DropdownMenu>

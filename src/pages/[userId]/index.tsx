@@ -9,15 +9,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {Toaster} from "@/components/ui/toaster";
-import {deleteOrder, getOrders} from "@/api/orders";
+import {deleteOrder, getUserOrders} from "@/api/orders";
 import ManageOrder from "@/form/ManageOrder";
 import {Order} from "@/model/orderData";
 import {toast} from "@/components/ui/use-toast";
 import {UserData} from "@/model/userData";
-import {getMyData} from "@/api/users";
+import {getUserData} from "@/api/users";
 import Custom403 from "@/pages/403";
+import {InferGetServerSidePropsType} from "next";
 
-export default function Me() {
+export const getServerSideProps = (async (context: any) => {
+    if (context.params)
+        return {
+            props: {
+                id: context.params.userId
+            }
+        }
+})
+export default function UserId({id}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [data, setData] = useState<UserData>();
     const [orders, setOrders] = useState<Order[]>([]);
     const [sortConfig, setSortConfig] = useState<{
@@ -27,15 +36,15 @@ export default function Me() {
     const [error403, setError403] = useState(false);
 
     useEffect(() => {
-        getMyData()
+        getUserData(id)
             .then(value => setData(value))
             .catch(error => {
-                if (error.response && error.response.status === 403) {
+                if (error.response && error.response.status === 403 || error.response.status === 400) {
                     setError403(true);
                 }
             });
 
-        getOrders()
+        getUserOrders(id)
             .then(value => setOrders(value))
             .catch(error => {
                 if (error.response && error.response.status === 403) {

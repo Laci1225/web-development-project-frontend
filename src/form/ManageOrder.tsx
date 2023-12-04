@@ -17,10 +17,12 @@ interface OrderFormProps {
     existingOrder?: Order
     triggerName: ReactNode
     triggerVariant?: ButtonProps["variant"]
+    userId: number
 }
 
 
-export default function ManageOrder({onOrderCreated, existingOrder, triggerVariant, triggerName}: OrderFormProps) {
+export default function ManageOrder({onOrderCreated, existingOrder, triggerVariant, triggerName, userId}: OrderFormProps) {
+
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false)
     const form = useForm<z.infer<typeof orderSchema>>({
@@ -35,7 +37,7 @@ export default function ManageOrder({onOrderCreated, existingOrder, triggerVaria
     function onSubmit(values: z.infer<typeof orderSchema>) {
         setIsSubmitting(true)
         if (existingOrder) {
-            updateOrder(existingOrder.id, values)
+            updateOrder(existingOrder.id, values, userId)
                 .then((result) => {
                     onOrderCreated(result)
                     toast({
@@ -52,7 +54,7 @@ export default function ManageOrder({onOrderCreated, existingOrder, triggerVaria
                 setIsSubmitting(false)
             })
         } else {
-            createOrder(values)
+            createOrder(values, userId)
                 .then((result) => {
                     onOrderCreated(result)
                     toast({
