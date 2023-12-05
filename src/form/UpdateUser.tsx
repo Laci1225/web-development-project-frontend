@@ -37,6 +37,7 @@ export default function UpdateUser({user}: RegisterPros) {
             value => {
                 toast({
                     title: "Successfully updated",
+                    duration: 2000
                 })
                 console.log(value)
                 setIsSubmitting(false)

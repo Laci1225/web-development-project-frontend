@@ -155,7 +155,8 @@ export default function Me() {
                                                                                 toast({
                                                                                     variant: "default",
                                                                                     title: "Order data deleted successfully",
-                                                                                    description: `${deletedOrder.name} deleted`
+                                                                                    description: `${deletedOrder.name} deleted`,
+                                                                                    duration: 2000
                                                                                 })
                                                                             )
                                                                         const updatedOrders = orders.filter(c => c.id !== order.id)

@@ -83,7 +83,8 @@ function RemoveUser({user, usersData, setUsersData}: RemoveUserProps) {
                                     toast({
                                         variant: "default",
                                         title: "User data deleted successfully",
-                                        description: `${deletedUser.username} deleted`
+                                        description: `${deletedUser.username} deleted`,
+                                        duration: 2000
                                     });
                                     const updatedUsers = usersData.filter(c => c.id !== user.id)
                                     setUsersData(updatedUsers);
@@ -213,7 +214,8 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
                                                             <DropdownMenuSeparator/>
                                                             {myData?.role === 'ADMIN' ? (
                                                                 <>
-                                                                    <DropdownMenuItem className={"justify-center"} asChild>
+                                                                    <DropdownMenuItem className={"justify-center"}
+                                                                                      asChild>
                                                                         <EditUser user={user} usersData={usersData}
                                                                                   setUsersData={setUsersData}/>
                                                                     </DropdownMenuItem>
@@ -279,10 +281,13 @@ export default function Users({users}: InferGetServerSidePropsType<typeof getSer
                                                             <>
                                                                 <DropdownMenuItem className={"w-8 justify-center"}
                                                                                   disabled>
-                                                                    <span className="material-icons-outlined">edit</span>
+                                                                    <span
+                                                                        className="material-icons-outlined">edit</span>
                                                                 </DropdownMenuItem>
-                                                                <DropdownMenuItem className={"w-8 justify-center"} disabled>
-                                                                    <span className="material-icons-outlined">delete</span>
+                                                                <DropdownMenuItem className={"w-8 justify-center"}
+                                                                                  disabled>
+                                                                    <span
+                                                                        className="material-icons-outlined">delete</span>
                                                                 </DropdownMenuItem>
                                                             </>
                                                         )}

@@ -43,12 +43,14 @@ export default function ManageOrder({onOrderCreated, existingOrder, triggerVaria
                     toast({
                         title: "An order is successfully updated",
                         description: `An order with name: ${form.getValues("name")} updated`,
+                        duration: 2000
                     })
                     setDialogOpen(false)
                 }).catch(reason => {
                 toast({
                     variant: "destructive",
                     title: reason.toString(),
+                    duration: 2000
                 })
             }).finally(() => {
                 setIsSubmitting(false)
@@ -60,12 +62,14 @@ export default function ManageOrder({onOrderCreated, existingOrder, triggerVaria
                     toast({
                         title: "An order is successfully added",
                         description: `An order with name: ${form.getValues("name")} created`,
+                        duration: 2000
                     })
                     setDialogOpen(false)
                 }).catch(reason => {
                 toast({
                     variant: "destructive",
                     title: reason.toString(),
+                    duration: 2000
                 })
             }).finally(() => {
                 setIsSubmitting(false)

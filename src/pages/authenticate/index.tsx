@@ -35,6 +35,7 @@ export default function Authenticate() {
                 toast({
                     title: "Successfully authenticated",
                     description: `User: ${form.getValues("username")} authenticated`,
+                    duration: 2000
                 })
                 setIsSubmitting(false)
                 router.push('/me').then(() => window.location.reload());

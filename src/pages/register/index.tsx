@@ -31,6 +31,7 @@ export default function Register() {
             value => {
                 toast({
                     title: "Successfully registered",
+                    duration: 2000
                 })
                 setIsSubmitting(false)
                 router.push('/authenticate');
